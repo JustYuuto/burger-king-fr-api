@@ -25,6 +25,7 @@ declare class Kingdom {
 
 declare class Orders {
     constructor(client: Client);
+    fetch(days?: number, limited?: boolean): Promise<[]>;
     addCouponCode(code: string): Promise<void>;
 }
 
@@ -33,7 +34,6 @@ declare class Restaurant {
     fetch(id: string): Promise<{
         quota(): Promise<boolean>
     }>;
-    fetchOrders(days?: number, limited?: boolean): Promise<[]>;
 }
 
 declare class Profile {

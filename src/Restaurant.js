@@ -15,9 +15,4 @@ module.exports = class Restaurant {
     return data;
   }
 
-  async fetchOrders(days = 1, limited = true) {
-    const { data } = await this.client.get(`public/orders?days=${days}&isLimited=${limited}`);
-    return data;
-  }
-
 };
