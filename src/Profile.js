@@ -1,13 +1,5 @@
 module.exports = class Profile {
 
-  _email = null;
-  _civility = null;
-  _lastName = null;
-  _firstName = null;
-  _phone = null;
-  _birthdate = null;
-  _maxKids = 0;
-
   constructor(client) {
     this.client = client;
   }
@@ -22,7 +14,8 @@ module.exports = class Profile {
     this._phone = profile.phone;
     const [day, month, year] = profile.birthdate.split('/').map(n => parseInt(n));
     this._birthdate = new Date(year, month - 1, day);
-    this._maxKids = profile.maxKids;
+    this._maxKids = profile.maxKids ?? 0;
+    this._loyaltyCardCode = profile.analyticsData.loyaltyCardCode;
   }
 
   get email() {
@@ -51,6 +44,10 @@ module.exports = class Profile {
 
   get maxKids() {
     return this._maxKids;
+  }
+
+  get loyaltyCardCode() {
+    return this._loyaltyCardCode;
   }
 
 };

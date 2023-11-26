@@ -2,6 +2,7 @@ module.exports = class Kingdom {
 
   _points = 0;
   _blazons = [];
+  _coupons = [];
 
   constructor(client) {
     this.client = client;
@@ -15,12 +16,22 @@ module.exports = class Kingdom {
     this._blazons = blazons.blazons;
   }
 
+  async fetchOffers() {
+    const { data: offers } = await this.client.get('kingdom/offers');
+
+    this._coupons = offers.coupons;
+  }
+
   get points() {
     return this._points;
   }
 
   get blazons() {
     return this._blazons;
+  }
+
+  get coupons() {
+    return this._coupons;
   }
 
 };

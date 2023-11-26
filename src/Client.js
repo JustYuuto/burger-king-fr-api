@@ -50,8 +50,11 @@ module.exports = class Client {
     this.orders = new Orders(this);
     this.restaurant = new Restaurant(this);
 
-    await this.kingdom.fetch();
     await this.profile.fetch();
+
+    const fetchOnStartup = this.options.fetchOnStartup;
+    if (fetchOnStartup.includes('KINGDOM')) await this.kingdom.fetch();
+    if (fetchOnStartup.includes('COUPONS')) await this.kingdom.fetchOffers();
   }
 
   async request(url, method, body) {
@@ -84,3 +87,7 @@ module.exports = class Client {
   }
 
 };
+
+module.exports.FetchOnStartup = Object.freeze([
+  'COUPONS', 'KINGDOM'
+]);
