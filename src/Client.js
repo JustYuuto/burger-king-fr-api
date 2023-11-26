@@ -53,8 +53,10 @@ module.exports = class Client {
     await this.profile.fetch();
 
     const fetchOnStartup = this.options.fetchOnStartup;
-    if (fetchOnStartup.includes('KINGDOM')) await this.kingdom.fetch();
-    if (fetchOnStartup.includes('COUPONS')) await this.kingdom.fetchOffers();
+    if (fetchOnStartup) {
+      if (fetchOnStartup.includes('KINGDOM')) await this.kingdom.fetch();
+      if (fetchOnStartup.includes('COUPONS')) await this.kingdom.fetchOffers();
+    }
   }
 
   async request(url, method, body) {

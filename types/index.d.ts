@@ -4,7 +4,7 @@ declare class Client {
     public profile: Profile;
     public orders: Orders;
     public restaurant: Restaurant;
-    constructor(options: ClientOptions);
+    constructor(options?: ClientOptions);
     public login(email: string, password: string): Promise<void>;
     public login(bearer: string): Promise<void>;
     private request(url: string, method: string, body?: any): Promise<any>;
@@ -63,7 +63,7 @@ declare class Profile {
 }
 
 declare interface ClientOptions {
-    fetchOnStartup: FetchOnStartup[]
+    fetchOnStartup?: FetchOnStartup[]
 }
 
 declare interface OrderDetails {
