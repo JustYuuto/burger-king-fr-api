@@ -126,4 +126,11 @@ declare interface CatalogProductDrink {
 
 export type FetchOnStartup = 'COUPONS' | 'KINGDOM';
 
+declare class RequestError extends Error {
+    constructor(message: string, details: {
+        msg?: string,
+        status?: number
+    });
+}
+
 export default Client;
