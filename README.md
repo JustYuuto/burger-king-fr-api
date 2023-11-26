@@ -24,7 +24,7 @@ const BKClient = require('burger-king-fr-api');
 const client = new BKClient();
 ```
 
-Then log into your account. You can either login with an email and a password, or a bearer token (recommended).
+Then log into your account. You can either log in with an email and a password, or a bearer token (recommended).
 
 ```js
 await client.login('hello@world.fr', 'mySecureP@ssword123');
