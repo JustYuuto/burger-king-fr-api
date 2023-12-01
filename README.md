@@ -31,3 +31,7 @@ await client.login('hello@world.fr', 'mySecureP@ssword123');
 // or
 await client.login('eyJhb.............. a bearer token');
 ```
+
+## License
+
+This package is license under the MIT License. You can view it [here](LICENSE.txt).
