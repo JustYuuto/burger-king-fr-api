@@ -5,6 +5,7 @@ const Kingdom = require('./Kingdom');
 const Profile = require('./Profile');
 const Orders = require('./Orders');
 const Restaurant = require('./Restaurant');
+const Lottery = require('./Lottery');
 
 module.exports = class Client {
 
@@ -14,6 +15,7 @@ module.exports = class Client {
   profile;
   orders;
   restaurant;
+  lottery;
 
   constructor(options) {
     if (!options) options = {};
@@ -49,6 +51,7 @@ module.exports = class Client {
     this.profile = new Profile(this);
     this.orders = new Orders(this);
     this.restaurant = new Restaurant(this);
+    this.lottery = new Lottery(this);
 
     await this.profile.fetch();
 
@@ -59,33 +62,35 @@ module.exports = class Client {
     }
   }
 
-  async request(url, method, body) {
+  async request(url, method, body, config) {
     if (!url || typeof url !== 'string' || url.trim() === '') throw new Error('An invalid path was provided.');
     if (!(method in axios)) throw new Error('An invalid method was provided.');
 
     if (method.toLowerCase() === 'get') {
       return await axios[method](`${Utils.baseApiUrl}${url}`, {
-        headers: {
+        headers: config?.headers ?? {
           ...Utils.headers,
           Authorization: this.bearer
-        }
+        },
+        ...config
       });
     } else {
       return await axios[method](`${Utils.baseApiUrl}${url}`, body, {
-        headers: {
+        headers: config?.headers ?? {
           ...Utils.headers,
           Authorization: this.bearer
-        }
+        },
+        ...config
       });
     }
   }
 
-  async get(url) {
-    return this.request(url, 'get');
+  async get(url, config) {
+    return this.request(url, 'get', null, config);
   }
 
-  async post(url, body) {
-    return this.request(url, 'post', body);
+  async post(url, body, config) {
+    return this.request(url, 'post', body, config);
   }
 
 };

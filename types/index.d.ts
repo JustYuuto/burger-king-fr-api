@@ -4,12 +4,13 @@ declare class Client {
     public profile: Profile;
     public orders: Orders;
     public restaurant: Restaurant;
+    public lottery: Lottery;
     constructor(options?: ClientOptions);
     public login(email: string, password: string): Promise<void>;
     public login(bearer: string): Promise<void>;
-    private request(url: string, method: string, body?: any): Promise<any>;
-    private get(url: string): Promise<any>;
-    private post(url: string, body?: any): Promise<any>;
+    private request(url: string, method: string, body?: any, config?: any): Promise<any>;
+    private get(url: string, config?: any): Promise<any>;
+    private post(url: string, body?: any, config?: any): Promise<any>;
 }
 
 declare class Captcha {
@@ -60,6 +61,21 @@ declare class Profile {
     get birthdate(): string|null;
     get maxKids(): number;
     get loyaltyCardCode(): string|null;
+}
+
+declare class Lottery {
+    constructor(client: Client);
+    operation(): Promise<LotteryOperation> | LotteryOperation;
+    play(options?: LotteryPlayOptions): Promise<void>;
+}
+
+interface LotteryOperation {
+    available: boolean,
+    id: string
+}
+
+interface LotteryPlayOptions {
+    ignoreIfUnavailable: boolean
 }
 
 declare interface ClientOptions {
