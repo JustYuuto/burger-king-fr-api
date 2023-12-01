@@ -37,7 +37,6 @@ module.exports = class Lottery {
           prince: crypto.randomUUID()
         }
       };
-      console.log(data);
       await this.client.post('kingdom/lottery', data, {
         headers: {
           ...Utils.androidHeaders,
