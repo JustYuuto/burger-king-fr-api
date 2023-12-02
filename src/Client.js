@@ -72,6 +72,7 @@ module.exports = class Client {
           ...Utils.headers,
           Authorization: this.bearer
         },
+        proxy: this.options.proxy,
         ...config
       });
     } else {
@@ -80,6 +81,7 @@ module.exports = class Client {
           ...Utils.headers,
           Authorization: this.bearer
         },
+        proxy: this.options.proxy,
         ...config
       });
     }

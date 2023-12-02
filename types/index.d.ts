@@ -1,3 +1,5 @@
+import { AxiosProxyConfig } from 'axios';
+
 declare class Client {
     public options: ClientOptions;
     public kingdom: Kingdom;
@@ -69,17 +71,18 @@ declare class Lottery {
     play(options?: LotteryPlayOptions): Promise<void>;
 }
 
-interface LotteryOperation {
+declare interface LotteryOperation {
     available: boolean,
     id: string
 }
 
-interface LotteryPlayOptions {
+declare interface LotteryPlayOptions {
     ignoreIfUnavailable: boolean
 }
 
 declare interface ClientOptions {
-    fetchOnStartup?: FetchOnStartup[]
+    fetchOnStartup?: FetchOnStartup[],
+    proxy?: AxiosProxyConfig
 }
 
 declare interface OrderDetails {
