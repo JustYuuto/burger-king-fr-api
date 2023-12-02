@@ -1,5 +1,8 @@
 # Burger King French API wrapper
 
+[![](https://img.shields.io/npm/dm/burger-king-fr-api)](https://www.npmjs.com/package/burger-king-fr-api)
+[![](https://img.shields.io/npm/l/burger-king-fr-api)](LICENSE.txt)
+
 A Node wrapper for the French Burger King API (webapi.burgerking.fr).
 
 ## Why this project?
