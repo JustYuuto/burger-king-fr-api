@@ -10,6 +10,9 @@ declare class Client {
     constructor(options?: ClientOptions);
     public login(email: string, password: string): Promise<void>;
     public login(bearer: string): Promise<void>;
+    public createAccount(options: AccountCreationOptions): Promise<{
+        activate(token: string): Promise<void>;
+    }>;
     private request(url: string, method: string, body?: any, config?: any): Promise<any>;
     private get(url: string, config?: any): Promise<any>;
     private post(url: string, body?: any, config?: any): Promise<any>;
@@ -78,6 +81,15 @@ declare interface LotteryOperation {
 
 declare interface LotteryPlayOptions {
     ignoreIfUnavailable: boolean
+}
+
+declare interface AccountCreationOptions {
+    email: string,
+    password: string,
+    birthdate: string | Date,
+    optIn?: boolean,
+    student?: boolean,
+    favoriteRestaurant?: string
 }
 
 declare interface ClientOptions {

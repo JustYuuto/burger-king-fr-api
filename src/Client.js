@@ -6,6 +6,7 @@ const Profile = require('./Profile');
 const Orders = require('./Orders');
 const Restaurant = require('./Restaurant');
 const Lottery = require('./Lottery');
+const RequestError = require('./RequestError');
 
 module.exports = class Client {
 
@@ -59,6 +60,43 @@ module.exports = class Client {
     if (fetchOnStartup) {
       if (fetchOnStartup.includes('KINGDOM')) await this.kingdom.fetch();
       if (fetchOnStartup.includes('COUPONS')) await this.kingdom.fetchOffers();
+    }
+  }
+
+  async createAccount(options) {
+    if (!options) options = {};
+    if (!options.email) throw new Error('Email is required');
+    if (!options.password) throw new Error('Password is required');
+    if (!options.birthdate) throw new Error('Birthdate is required');
+    if (options.birthdate instanceof Date) options.birthdate = `${
+      options.birthdate.getDate() < 10 ? `0${options.birthdate.getDate()}` : options.birthdate.getDate()
+    }${
+      options.birthdate.getMonth() + 1 < 10 ? `0${options.birthdate.getMonth()}` : options.birthdate.getMonth()
+    }${options.birthdate.getFullYear()}`;
+    if (typeof options.birthdate === 'string' && options.birthdate.length > 8 || options.birthdate.length < 8)
+      throw new Error('Birthdate must be in the format DDMMYYYY');
+
+    try {
+      await this.post('public/kingdom/signup', {
+        login: options.email,
+        password: options.password,
+        birthdate: options.birthdate,
+        loginType: 'CLASSIC',
+        uid: '',
+        favRestaurantFrNumber: options.favoriteRestaurant ?? 'K0001',
+        optin: options.optIn ?? false,
+        student: options.student ?? false,
+        recaptchaToken: await Captcha.resolve()
+      });
+      const self = this;
+      return {
+        async activate(token) {
+          if (!token || !token.startsWith('eyJhb')) throw new Error('Invalid token');
+          await self.get(`public/kingdom/activate?token=${token}`);
+        }
+      };
+    } catch (e) {
+      throw new RequestError('Failed to create account', e.response.data);
     }
   }
 
