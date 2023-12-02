@@ -12,6 +12,7 @@ module.exports = class Kingdom {
     const { data: kingdom } = await this.client.get('kingdom');
     const { data: blazons } = await this.client.get('kingdom/blazons');
 
+    this._code = kingdom.kingdomAuthCode;
     this._points = kingdom.pointInfos.points;
     this._blazons = blazons.blazons;
   }
@@ -32,6 +33,10 @@ module.exports = class Kingdom {
 
   get coupons() {
     return this._coupons;
+  }
+
+  get code() {
+    return this._code;
   }
 
 };

@@ -28,6 +28,7 @@ declare class Kingdom {
     get points(): number;
     get blazons(): [];
     get coupons(): [];
+    get code(): string;
 }
 
 declare class Orders {
