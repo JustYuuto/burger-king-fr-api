@@ -71,7 +71,7 @@ module.exports = class Client {
     if (options.birthdate instanceof Date) options.birthdate = `${
       options.birthdate.getDate() < 10 ? `0${options.birthdate.getDate()}` : options.birthdate.getDate()
     }${
-      options.birthdate.getMonth() + 1 < 10 ? `0${options.birthdate.getMonth()}` : options.birthdate.getMonth()
+      options.birthdate.getMonth() + 1 < 10 ? `0${options.birthdate.getMonth() + 1}` : options.birthdate.getMonth() + 1
     }${options.birthdate.getFullYear()}`;
     if (typeof options.birthdate === 'string' && options.birthdate.length > 8 || options.birthdate.length < 8)
       throw new Error('Birthdate must be in the format DDMMYYYY');
