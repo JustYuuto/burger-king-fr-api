@@ -10,6 +10,10 @@ const RequestError = require('./RequestError');
 
 module.exports = class Client {
 
+  /**
+   * @type {axios.AxiosInstance}
+   */
+  axios;
   options;
   bearer;
   kingdom;
@@ -21,6 +25,13 @@ module.exports = class Client {
   constructor(options) {
     if (!options) options = {};
     this.options = options;
+    this.axios = axios.create({
+      baseURL: Utils.baseApiUrl,
+      headers: {
+        ...Utils.androidHeaders
+      },
+      proxy: options.proxy
+    });
   }
 
   async login(email, password) {
@@ -32,22 +43,21 @@ module.exports = class Client {
         throw new Error('No email or password provided');
       }
 
-      const { headers } = await axios.post(`${Utils.baseApiUrl}public/kingdom/login`, {
-        stayLoggedIn: true,
+      const data = {
         login: email,
         password: password,
-        loginType: 'CLASSIC',
-        uid: '',
-        recaptchaToken: await Captcha.resolve()
-      }, {
-        headers: {
-          ...Utils.headers,
-          Authorization: 'undefined'
-        }
-      });
-      this.bearer = headers['authorization'];
+        recaptchaToken: await Captcha.resolve(),
+        stayLoggedIn: true,
+      };
+
+      try {
+        const { headers } = await this.axios.post('public/kingdom/login', data);
+        this.bearer = headers['authorization'];
+      } catch (e) {
+        await this.loginWithMfa(data);
+      }
     }
-    
+
     this.kingdom = new Kingdom(this);
     this.profile = new Profile(this);
     this.orders = new Orders(this);
@@ -60,6 +70,36 @@ module.exports = class Client {
     if (fetchOnStartup) {
       if (fetchOnStartup.includes('KINGDOM')) await this.kingdom.fetch();
       if (fetchOnStartup.includes('COUPONS')) await this.kingdom.fetchOffers();
+    }
+  }
+
+  async loginWithMfa(data) {
+    if (!data) throw new Error('No login data provided. Please use Client.login() instead.');
+    try {
+      const { body } = await this.axios.post('public/kingdom/auth/login-with-mfa', data);
+      this.bearer = body.mfaToken;
+    } catch (e) {
+      console.log(e);
+      throw new RequestError('Failed to log in with MFA', e.response.data);
+    }
+  }
+
+  async sendOtp() {
+    try {
+      await this.post('public/kingdom/auth/send-otp');
+    } catch (e) {
+      throw new RequestError('Failed to send OTP', e.response.data);
+    }
+  }
+
+  async verifyOtp(otp) {
+    if (!otp) throw new Error('No OTP provided');
+    if (isNaN(parseInt(otp)) || otp.length !== 6) throw new Error('Invalid OTP');
+    try {
+      const { headers } = await this.post('public/kingdom/auth/verify-otp', { code: otp });
+      this.bearer = headers['authorization'];
+    } catch (e) {
+      throw new RequestError('Failed to verify OTP', e.response.data);
     }
   }
 
@@ -96,6 +136,7 @@ module.exports = class Client {
         }
       };
     } catch (e) {
+      console.log(e);
       throw new RequestError('Failed to create account', e.response.data);
     }
   }
@@ -105,21 +146,17 @@ module.exports = class Client {
     if (!(method in axios)) throw new Error('An invalid method was provided.');
 
     if (method.toLowerCase() === 'get') {
-      return await axios[method](`${Utils.baseApiUrl}${url}`, {
+      return await this.axios[method](url, {
         headers: config?.headers ?? {
-          ...Utils.headers,
           Authorization: this.bearer
         },
-        proxy: this.options.proxy,
         ...config
       });
     } else {
-      return await axios[method](`${Utils.baseApiUrl}${url}`, body, {
+      return await this.axios[method](url, body, {
         headers: config?.headers ?? {
-          ...Utils.headers,
           Authorization: this.bearer
         },
-        proxy: this.options.proxy,
         ...config
       });
     }

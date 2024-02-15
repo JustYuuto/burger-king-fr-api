@@ -9,7 +9,7 @@ module.exports = class Captcha {
     params.set('ar', '1');
     params.set('k', apiKey);
     params.set('co', 'aHR0cHM6Ly93d3cuYnVyZ2Vya2luZy5mcjo0NDM.');
-    params.set('hl', 'en');
+    params.set('hl', 'fr');
     params.set('v', '-QbJqHfGOUB8nuVRLvzFLVed');
     params.set('size', 'invisible');
     params.set('cb', 'np3eftnhlzvl');

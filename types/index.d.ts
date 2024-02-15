@@ -10,6 +10,9 @@ declare class Client {
     constructor(options?: ClientOptions);
     public login(email: string, password: string): Promise<void>;
     public login(bearer: string): Promise<void>;
+    private loginWithMfa(data: any): Promise<void>;
+    public sendOtp(): Promise<void>;
+    public verifyOtp(otp: string): Promise<void>;
     public createAccount(options: AccountCreationOptions): Promise<{
         activate(token: string): Promise<void>;
     }>;
